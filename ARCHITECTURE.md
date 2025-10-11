@@ -22,7 +22,7 @@ The project follows a modular structure, organizing code by feature and responsi
     *   **`app/[locale]/`**: Frontend pages with internationalization support. Includes `layout.tsx`, `page.tsx`, `loading.tsx` for core UI, and subdirectories for specific routes like `[workspaceid]`, `help`, `login`, `setup`.
     *   **`app/api/`**: Next.js API routes for backend logic and LLM interactions.
         *   `assistants/`: API endpoints for managing AI assistants.
-        *   `chat/`: Core chat API for processing messages and interacting with LLMs.
+        *   `chat/`: Core chat API for processing messages and interacting with various Large Language Models (LLMs). This directory contains subdirectories for different LLM providers (e.g., `openai/`, `anthropic/`, `google/`, `mistral/`, `azure/`, `groq/`, `perplexity/`, `openrouter/`, `custom/`) and a `tools/` directory. It acts as a unified interface, routing chat requests to the appropriate LLM based on user configuration and integrating with external tools for enhanced conversational capabilities.
         *   `command/`: API for handling specific commands within the chat.
         *   `keys/`: API for managing user API keys for various services.
         *   `retrieval/`: API for retrieval-augmented generation (RAG) functionalities.
