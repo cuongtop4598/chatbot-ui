@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase/browser-client"
-import { TablesInsert, TablesUpdate } from "@/supabase/types"
+import { Tables, TablesInsert, TablesUpdate } from "@/supabase/types"
+import { PostgrestError } from "@supabase/supabase-js"
 
 export const getAssistantById = async (assistantId: string) => {
   const { data: assistant, error } = await supabase
@@ -34,7 +35,12 @@ export const getAssistantWorkspacesByWorkspaceId = async (
     throw new Error(error.message)
   }
 
-  return workspace
+  // Explicitly cast the assistants property to the correct type
+  return workspace as {
+    id: string
+    name: string
+    assistants: Tables<"assistants">[]
+  }
 }
 
 export const getAssistantWorkspacesByAssistantId = async (
@@ -79,7 +85,7 @@ export const createAssistant = async (
     workspace_id
   })
 
-  return createdAssistant
+  return createdAssistant as Tables<"assistants">
 }
 
 export const createAssistants = async (
@@ -103,7 +109,7 @@ export const createAssistants = async (
     }))
   )
 
-  return createdAssistants
+  return createdAssistants as Tables<"assistants">[]
 }
 
 export const createAssistantWorkspace = async (item: {
@@ -121,7 +127,7 @@ export const createAssistantWorkspace = async (item: {
     throw new Error(error.message)
   }
 
-  return createdAssistantWorkspace
+  return createdAssistantWorkspace as Tables<"assistant_workspaces">
 }
 
 export const createAssistantWorkspaces = async (
@@ -134,7 +140,7 @@ export const createAssistantWorkspaces = async (
 
   if (error) throw new Error(error.message)
 
-  return createdAssistantWorkspaces
+  return createdAssistantWorkspaces as Tables<"assistant_workspaces">[]
 }
 
 export const updateAssistant = async (
@@ -152,7 +158,7 @@ export const updateAssistant = async (
     throw new Error(error.message)
   }
 
-  return updatedAssistant
+  return updatedAssistant as Tables<"assistants">
 }
 
 export const deleteAssistant = async (assistantId: string) => {

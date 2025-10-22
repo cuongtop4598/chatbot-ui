@@ -22,20 +22,15 @@ export const ModelSelect: FC<ModelSelectProps> = ({
   selectedModelId,
   onSelectModel
 }) => {
-  const {
-    profile,
-    models,
-    availableHostedModels,
-    availableLocalModels,
-    availableOpenRouterModels
-  } = useContext(ChatbotUIContext)
+  const { profile, models, availableLocalModels, availableHostedModels } =
+    useContext(ChatbotUIContext)
 
   const inputRef = useRef<HTMLInputElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
 
   const [isOpen, setIsOpen] = useState(false)
   const [search, setSearch] = useState("")
-  const [tab, setTab] = useState<"hosted" | "local">("hosted")
+  const [tab, setTab] = useState<ModelProvider | "all">("all")
 
   useEffect(() => {
     if (isOpen) {
@@ -59,9 +54,8 @@ export const ModelSelect: FC<ModelSelectProps> = ({
       platformLink: "",
       imageInput: false
     })),
-    ...availableHostedModels,
     ...availableLocalModels,
-    ...availableOpenRouterModels
+    ...availableHostedModels
   ]
 
   const groupedModels = allModels.reduce<Record<string, LLM[]>>(
@@ -81,6 +75,8 @@ export const ModelSelect: FC<ModelSelectProps> = ({
   )
 
   if (!profile) return null
+
+  const modelProviders = Object.keys(groupedModels) as ModelProvider[]
 
   return (
     <DropdownMenu
@@ -133,13 +129,14 @@ export const ModelSelect: FC<ModelSelectProps> = ({
         align="start"
       >
         <Tabs value={tab} onValueChange={(value: any) => setTab(value)}>
-          {availableLocalModels.length > 0 && (
-            <TabsList defaultValue="hosted" className="grid grid-cols-2">
-              <TabsTrigger value="hosted">Hosted</TabsTrigger>
-
-              <TabsTrigger value="local">Local</TabsTrigger>
-            </TabsList>
-          )}
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="all">All</TabsTrigger>
+            {modelProviders.map(provider => (
+              <TabsTrigger key={provider} value={provider}>
+                {provider.charAt(0).toUpperCase() + provider.slice(1)}
+              </TabsTrigger>
+            ))}
+          </TabsList>
         </Tabs>
 
         <Input
@@ -154,9 +151,8 @@ export const ModelSelect: FC<ModelSelectProps> = ({
           {Object.entries(groupedModels).map(([provider, models]) => {
             const filteredModels = models
               .filter(model => {
-                if (tab === "hosted") return model.provider !== "ollama"
-                if (tab === "local") return model.provider === "ollama"
-                if (tab === "openrouter") return model.provider === "openrouter"
+                if (tab === "all") return true
+                return model.provider === tab
               })
               .filter(model =>
                 model.modelName.toLowerCase().includes(search.toLowerCase())
@@ -168,9 +164,7 @@ export const ModelSelect: FC<ModelSelectProps> = ({
             return (
               <div key={provider}>
                 <div className="mb-1 ml-2 text-xs font-bold tracking-wide opacity-50">
-                  {provider === "openai" && profile.use_azure_openai
-                    ? "AZURE OPENAI"
-                    : provider.toLocaleUpperCase()}
+                  {provider.toLocaleUpperCase()}
                 </div>
 
                 <div className="mb-4">

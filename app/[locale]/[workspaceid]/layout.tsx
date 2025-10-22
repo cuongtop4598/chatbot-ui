@@ -16,6 +16,7 @@ import { getWorkspaceById } from "@/db/workspaces"
 import { convertBlobToBase64 } from "@/lib/blob-to-b64"
 import { supabase } from "@/lib/supabase/browser-client"
 import { LLMID } from "@/types"
+import { Tables } from "@/supabase/types"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { ReactNode, useContext, useEffect, useState } from "react"
 import Loading from "../loading"
@@ -91,10 +92,18 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
   const fetchWorkspaceData = async (workspaceId: string) => {
     setLoading(true)
 
-    const workspace = await getWorkspaceById(workspaceId)
+    const workspace = (await getWorkspaceById(
+      workspaceId
+    )) as Tables<"workspaces"> | null
     setSelectedWorkspace(workspace)
 
-    const assistantData = await getAssistantWorkspacesByWorkspaceId(workspaceId)
+    type AssistantWorkspaceDataType = {
+      id: string
+      name: string
+      assistants: Tables<"assistants">[]
+    }
+    const assistantData: AssistantWorkspaceDataType =
+      await getAssistantWorkspacesByWorkspaceId(workspaceId)
     setAssistants(assistantData.assistants)
 
     for (const assistant of assistantData.assistants) {
@@ -134,26 +143,61 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
     const chats = await getChatsByWorkspaceId(workspaceId)
     setChats(chats)
 
-    const collectionData =
+    type CollectionWorkspaceDataType = {
+      id: string
+      name: string
+      collections: Tables<"collections">[]
+    }
+    const collectionData: CollectionWorkspaceDataType =
       await getCollectionWorkspacesByWorkspaceId(workspaceId)
     setCollections(collectionData.collections)
 
     const folders = await getFoldersByWorkspaceId(workspaceId)
     setFolders(folders)
 
-    const fileData = await getFileWorkspacesByWorkspaceId(workspaceId)
+    type FileWorkspaceDataType = {
+      id: string
+      name: string
+      files: Tables<"files">[]
+    }
+    const fileData: FileWorkspaceDataType =
+      await getFileWorkspacesByWorkspaceId(workspaceId)
     setFiles(fileData.files)
 
-    const presetData = await getPresetWorkspacesByWorkspaceId(workspaceId)
+    type PresetWorkspaceDataType = {
+      id: string
+      name: string
+      presets: Tables<"presets">[]
+    }
+    const presetData: PresetWorkspaceDataType =
+      await getPresetWorkspacesByWorkspaceId(workspaceId)
     setPresets(presetData.presets)
 
-    const promptData = await getPromptWorkspacesByWorkspaceId(workspaceId)
+    type PromptWorkspaceDataType = {
+      id: string
+      name: string
+      prompts: Tables<"prompts">[]
+    }
+    const promptData: PromptWorkspaceDataType =
+      await getPromptWorkspacesByWorkspaceId(workspaceId)
     setPrompts(promptData.prompts)
 
-    const toolData = await getToolWorkspacesByWorkspaceId(workspaceId)
+    type ToolWorkspaceDataType = {
+      id: string
+      name: string
+      tools: Tables<"tools">[]
+    }
+    const toolData: ToolWorkspaceDataType =
+      await getToolWorkspacesByWorkspaceId(workspaceId)
     setTools(toolData.tools)
 
-    const modelData = await getModelWorkspacesByWorkspaceId(workspaceId)
+    type ModelWorkspaceDataType = {
+      id: string
+      name: string
+      models: Tables<"models">[]
+    }
+    const modelData: ModelWorkspaceDataType =
+      await getModelWorkspacesByWorkspaceId(workspaceId)
     setModels(modelData.models)
 
     setChatSettings({

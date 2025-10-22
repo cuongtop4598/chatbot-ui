@@ -1,36 +1,34 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: ollama-gpu
+  name: chatbot-gpu
   labels:
-    app: ollama
+    app: chatbot
 spec:
   selector:
     matchLabels:
-      app: ollama
+      app: chatbot
   template:
     metadata:
       labels:
-        app: ollama
+        app: chatbot
     spec:
       restartPolicy: Always
       volumes:
-        - name: ollama-models
-          persistentVolumeClaim:
-            claimName: ollama-models-pvc
+        - name: chatbot-models
       containers:
-        - name: ollama
-          image: your-registry/ollama:local
+        - name: chatbot
+          image: MGT-BCM-001:5000/cuongnm72-llm:add-model
           ports:
             - containerPort: 11434
           resources:
             limits:
               nvidia.com/gpu: 1
           env:
-            - name: OLLAMA_HOST
+            - name: chatbot_HOST
               value: "0.0.0.0"
-            - name: OLLAMA_KEEP_ALIVE
+            - name: chatbot_KEEP_ALIVE
               value: "3600" # keep model loaded for 1 hour idle
           volumeMounts:
-            - name: ollama-models
-              mountPath: /root/.ollama
+            - name: chatbot-models
+              mountPath: /root/.chatbot

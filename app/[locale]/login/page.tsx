@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { SubmitButton } from "@/components/ui/submit-button"
 import { createClient } from "@/lib/supabase/server"
-import { Database } from "@/supabase/types"
+import { Database, Tables } from "@/supabase/types"
 import { createServerClient } from "@supabase/ssr"
 import { get } from "@vercel/edge-config"
 import { Metadata } from "next"
@@ -45,7 +45,8 @@ export default async function Login({
       throw new Error(error.message)
     }
 
-    return redirect(`/${homeWorkspace.id}/chat`)
+    const typedHomeWorkspace = homeWorkspace as Tables<"workspaces">
+    return redirect(`/${typedHomeWorkspace.id}/chat`)
   }
 
   const signIn = async (formData: FormData) => {
@@ -78,7 +79,8 @@ export default async function Login({
       )
     }
 
-    return redirect(`/${homeWorkspace.id}/chat`)
+    const typedHomeWorkspace = homeWorkspace as Tables<"workspaces">
+    return redirect(`/${typedHomeWorkspace.id}/chat`)
   }
 
   const getEnvVarOrEdgeConfigValue = async (name: string) => {

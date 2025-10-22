@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase/browser-client"
-import { TablesInsert, TablesUpdate } from "@/supabase/types"
+import { Tables, TablesInsert, TablesUpdate } from "@/supabase/types"
 
 export const getCollectionById = async (collectionId: string) => {
   const { data: collection, error } = await supabase
@@ -34,7 +34,11 @@ export const getCollectionWorkspacesByWorkspaceId = async (
     throw new Error(error.message)
   }
 
-  return workspace
+  return workspace as {
+    id: string
+    name: string
+    collections: Tables<"collections">[]
+  }
 }
 
 export const getCollectionWorkspacesByCollectionId = async (
@@ -79,7 +83,7 @@ export const createCollection = async (
     workspace_id
   })
 
-  return createdCollection
+  return createdCollection as Tables<"collections">
 }
 
 export const createCollections = async (
@@ -103,7 +107,7 @@ export const createCollections = async (
     }))
   )
 
-  return createdCollections
+  return createdCollections as Tables<"collections">[]
 }
 
 export const createCollectionWorkspace = async (item: {
@@ -121,7 +125,7 @@ export const createCollectionWorkspace = async (item: {
     throw new Error(error.message)
   }
 
-  return createdCollectionWorkspace
+  return createdCollectionWorkspace as Tables<"collection_workspaces">
 }
 
 export const createCollectionWorkspaces = async (
@@ -134,7 +138,7 @@ export const createCollectionWorkspaces = async (
 
   if (error) throw new Error(error.message)
 
-  return createdCollectionWorkspaces
+  return createdCollectionWorkspaces as Tables<"collection_workspaces">[]
 }
 
 export const updateCollection = async (
@@ -152,7 +156,7 @@ export const updateCollection = async (
     throw new Error(error.message)
   }
 
-  return updatedCollection
+  return updatedCollection as Tables<"collections">
 }
 
 export const deleteCollection = async (collectionId: string) => {

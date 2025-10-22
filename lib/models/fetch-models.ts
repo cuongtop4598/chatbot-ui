@@ -5,12 +5,10 @@ import { LLM_LIST_MAP } from "./llm/llm-list"
 
 export const fetchHostedModels = async (profile: Tables<"profiles">) => {
   try {
-    const providers = ["google", "anthropic", "mistral", "groq", "perplexity"]
+    const providers = []
 
     if (profile.use_azure_openai) {
       providers.push("azure")
-    } else {
-      providers.push("openai")
     }
 
     const response = await fetch("/api/keys")
@@ -26,9 +24,7 @@ export const fetchHostedModels = async (profile: Tables<"profiles">) => {
     for (const provider of providers) {
       let providerKey: keyof typeof profile
 
-      if (provider === "google") {
-        providerKey = "google_gemini_api_key"
-      } else if (provider === "azure") {
+      if (provider === "azure") {
         providerKey = "azure_openai_api_key"
       } else {
         providerKey = `${provider}_api_key` as keyof typeof profile
@@ -87,27 +83,19 @@ export const fetchOpenRouterModels = async () => {
       throw new Error(`OpenRouter server is not responding.`)
     }
 
-    const { data } = await response.json()
+    const data = await response.json()
 
-    const openRouterModels = data.map(
-      (model: {
-        id: string
-        name: string
-        context_length: number
-      }): OpenRouterLLM => ({
-        modelId: model.id as LLMID,
-        modelName: model.id,
-        provider: "openrouter",
-        hostedId: model.name,
-        platformLink: "https://openrouter.dev",
-        imageInput: false,
-        maxContext: model.context_length
-      })
-    )
+    const openRouterModels: OpenRouterLLM[] = data.data.map((model: any) => ({
+      modelId: model.id as LLMID,
+      modelName: model.id,
+      provider: "openrouter",
+      hostedId: model.id,
+      platformLink: "https://openrouter.ai/docs#models",
+      imageInput: false
+    }))
 
     return openRouterModels
   } catch (error) {
-    console.error("Error fetching Open Router models: " + error)
-    toast.error("Error fetching Open Router models: " + error)
+    console.warn("Error fetching OpenRouter models: " + error)
   }
 }

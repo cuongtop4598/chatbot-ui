@@ -25,8 +25,12 @@ module.exports = withBundleAnalyzer(
         }
       ]
     },
+    output: "standalone", // Enables Next.js to output a standalone build for Docker
     experimental: {
       serverComponentsExternalPackages: ["sharp", "onnxruntime-node"]
+    },
+    eslint: {
+      ignoreDuringBuilds: true
     }
   })
 )

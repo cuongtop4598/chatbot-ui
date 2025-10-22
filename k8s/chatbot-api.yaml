@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ollama-ingress
+  name: chatbot-ingress
 spec:
   rules:
     - host: chatbot.vtx.ai
@@ -11,6 +11,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: ollama-service
+                name: chatbot-service
                 port:
-                  number: 11434
+                  number: 11435
