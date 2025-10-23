@@ -240,19 +240,3 @@ function adaptMessagesForGeminiVision(messages: any[]) {
   ]
   return visualQueryMessages
 }
-
-export async function adaptMessagesForGoogleGemini(
-  payload: ChatPayload,
-  messages: any[]
-) {
-  let geminiMessages = []
-  for (let i = 0; i < messages.length; i++) {
-    let adaptedMessage = adaptSingleMessageForGoogleGemini(messages[i])
-    geminiMessages.push(adaptedMessage)
-  }
-
-  if (payload.chatSettings.model === "gemini-pro-vision") {
-    geminiMessages = adaptMessagesForGeminiVision(geminiMessages)
-  }
-  return geminiMessages
-}

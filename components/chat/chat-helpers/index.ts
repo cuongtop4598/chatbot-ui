@@ -5,10 +5,7 @@ import { createChat } from "@/db/chats"
 import { createMessageFileItems } from "@/db/message-file-items"
 import { createMessages, updateMessage } from "@/db/messages"
 import { uploadMessageImage } from "@/db/storage/message-images"
-import {
-  buildFinalMessages,
-  adaptMessagesForGoogleGemini
-} from "@/lib/build-prompt"
+import { buildFinalMessages } from "@/lib/build-prompt"
 import { consumeReadableStream } from "@/lib/consume-stream"
 import { Tables, TablesInsert } from "@/supabase/types"
 import {
@@ -209,14 +206,8 @@ export const handleHostedChat = async (
   let draftMessages = await buildFinalMessages(payload, profile, chatImages)
 
   let formattedMessages: any[] = []
-  if (provider === "google") {
-    formattedMessages = await adaptMessagesForGoogleGemini(
-      payload,
-      draftMessages
-    )
-  } else {
-    formattedMessages = draftMessages
-  }
+
+  formattedMessages = draftMessages
 
   const apiEndpoint =
     provider === "custom" ? "/api/chat/custom" : `/api/chat/${provider}`

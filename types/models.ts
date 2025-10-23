@@ -1,1 +1,7 @@
-export type ModelProvider = "openai" | "azure" | "google" | "ollama" | "custom"
+export type ModelProvider =
+  | "openai"
+  | "azure"
+  | "google"
+  | "mistral"
+  | "ollama"
+  | "custom"
