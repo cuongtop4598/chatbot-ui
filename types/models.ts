@@ -1,1 +1,1 @@
-export type ModelProvider = "ollama" | "custom"
+export type ModelProvider = "openai" | "azure" | "google" | "ollama" | "custom"

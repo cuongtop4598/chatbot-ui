@@ -9,4 +9,4 @@ spec:
     - name: api
       port: 11435
       targetPort: 11434
-  type: LoadBalancer
+  type: NodePort

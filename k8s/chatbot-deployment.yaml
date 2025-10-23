@@ -25,7 +25,7 @@ spec:
             limits:
               nvidia.com/gpu: 1
           env:
-            - name: chatbot_HOST
+            - name: OLLAMA_HOST
               value: "0.0.0.0"
             - name: chatbot_KEEP_ALIVE
               value: "3600" # keep model loaded for 1 hour idle
