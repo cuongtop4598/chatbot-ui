@@ -1,52 +1,52 @@
 -- WORKSPACES
 
 UPDATE workspaces
-SET default_model = 'gpt-4-turbo-preview'
-WHERE default_model = 'gpt-4-1106-preview';
+SET default_model = 'ollama'
+WHERE default_model = 'ollama';
 
 UPDATE workspaces
-SET default_model = 'gpt-3.5-turbo'
-WHERE default_model = 'gpt-3.5-turbo-1106';
+SET default_model = 'ollama'
+WHERE default_model = 'ollama';
 
 -- PRESETS
 
 UPDATE presets
-SET model = 'gpt-4-turbo-preview'
-WHERE model = 'gpt-4-1106-preview';
+SET model = 'ollama'
+WHERE model = 'ollama';
 
 UPDATE presets
-SET model = 'gpt-3.5-turbo'
-WHERE model = 'gpt-3.5-turbo-1106';
+SET model = 'ollama'
+WHERE model = 'ollama';
 
 -- ASSISTANTS
 
 UPDATE assistants
-SET model = 'gpt-4-turbo-preview'
-WHERE model = 'gpt-4-1106-preview';
+SET model = 'ollama'
+WHERE model = 'ollama';
 
 UPDATE assistants
-SET model = 'gpt-3.5-turbo'
-WHERE model = 'gpt-3.5-turbo-1106';
+SET model = 'lm-vtx'
+WHERE model = 'ollama';
 
 -- CHATS
 
 UPDATE chats
-SET model = 'gpt-4-turbo-preview'
-WHERE model = 'gpt-4-1106-preview';
+SET model = 'ollama'
+WHERE model = 'ollama';
 
 UPDATE chats
-SET model = 'gpt-3.5-turbo'
-WHERE model = 'gpt-3.5-turbo-1106';
+SET model = 'ollama'
+WHERE model = 'ollama';
 
 -- MESSAGES
 
 UPDATE messages
-SET model = 'gpt-4-turbo-preview'
-WHERE model = 'gpt-4-1106-preview';
+SET model = 'ollama'
+WHERE model = 'ollama';
 
 UPDATE messages
-SET model = 'gpt-3.5-turbo'
-WHERE model = 'gpt-3.5-turbo-1106';
+SET model = 'ollama'
+WHERE model = 'ollama';
 
 -- PROFILES
 
@@ -93,7 +93,7 @@ BEGIN
         TRUE,
         'Home',
         4096,
-        'gpt-4-turbo-preview', -- Updated default model
+        'ollama', -- Updated default model
         'You are a friendly, helpful AI assistant.',
         0.5,
         'My home workspace.',

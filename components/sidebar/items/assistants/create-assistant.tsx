@@ -89,7 +89,7 @@ export const CreateAssistant: FC<CreateAssistantProps> = ({
     if (!assistantChatSettings.model) return false
 
     const compatibleModels = [
-      "gpt-4-turbo-preview",
+      "deepseek-r1",
       "gpt-4-vision-preview",
       "gpt-3.5-turbo-1106",
       "gpt-4"

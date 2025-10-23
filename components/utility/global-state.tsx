@@ -30,9 +30,13 @@ import { FC, useEffect, useState } from "react"
 
 interface GlobalStateProps {
   children: React.ReactNode
+  isOllamaRunning: boolean
 }
 
-export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
+export const GlobalState: FC<GlobalStateProps> = ({
+  children,
+  isOllamaRunning: isOllamaRunningProp
+}) => {
   const router = useRouter()
 
   // PROFILE STORE
@@ -54,6 +58,8 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const [envKeyMap, setEnvKeyMap] = useState<Record<string, VALID_ENV_KEYS>>({})
   const [availableHostedModels, setAvailableHostedModels] = useState<LLM[]>([])
   const [availableLocalModels, setAvailableLocalModels] = useState<LLM[]>([])
+  const [isOllamaRunning, setIsOllamaRunning] =
+    useState<boolean>(isOllamaRunningProp)
   const [availableOpenRouterModels, setAvailableOpenRouterModels] = useState<
     OpenRouterLLM[]
   >([])
@@ -77,7 +83,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const [userInput, setUserInput] = useState<string>("")
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
   const [chatSettings, setChatSettings] = useState<ChatSettings>({
-    model: "gpt-4-turbo-preview",
+    model: "ollama", // Set default model based on Ollama status
     prompt: "You are a helpful AI assistant.",
     temperature: 0.5,
     contextLength: 4000,
@@ -145,9 +151,13 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
       }
 
       if (process.env.NEXT_PUBLIC_OLLAMA_URL) {
-        const localModels = await fetchOllamaModels()
-        if (!localModels) return
+        const { localModels, isOllamaRunning } =
+          (await fetchOllamaModels()) || {
+            localModels: [],
+            isOllamaRunning: false
+          }
         setAvailableLocalModels(localModels)
+        setIsOllamaRunning(isOllamaRunning)
       }
     })()
   }, [])
@@ -233,6 +243,8 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         setAvailableHostedModels,
         availableLocalModels,
         setAvailableLocalModels,
+        isOllamaRunning,
+        setIsOllamaRunning,
         availableOpenRouterModels,
         setAvailableOpenRouterModels,
 

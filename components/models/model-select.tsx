@@ -16,11 +16,13 @@ import { ModelOption } from "./model-option"
 interface ModelSelectProps {
   selectedModelId: string
   onSelectModel: (modelId: LLMID) => void
+  onlyOllama?: boolean
 }
 
 export const ModelSelect: FC<ModelSelectProps> = ({
   selectedModelId,
-  onSelectModel
+  onSelectModel,
+  onlyOllama = false
 }) => {
   const { profile, models, availableLocalModels, availableHostedModels } =
     useContext(ChatbotUIContext)
@@ -45,18 +47,20 @@ export const ModelSelect: FC<ModelSelectProps> = ({
     setIsOpen(false)
   }
 
-  const allModels = [
-    ...models.map(model => ({
-      modelId: model.model_id as LLMID,
-      modelName: model.name,
-      provider: "custom" as ModelProvider,
-      hostedId: model.id,
-      platformLink: "",
-      imageInput: false
-    })),
-    ...availableLocalModels,
-    ...availableHostedModels
-  ]
+  const allModels = onlyOllama
+    ? availableLocalModels
+    : [
+        ...models.map(model => ({
+          modelId: model.model_id as LLMID,
+          modelName: model.name,
+          provider: "custom" as ModelProvider,
+          hostedId: model.id,
+          platformLink: "",
+          imageInput: false
+        })),
+        ...availableLocalModels,
+        ...availableHostedModels
+      ]
 
   const groupedModels = allModels.reduce<Record<string, LLM[]>>(
     (groups, model) => {
@@ -131,11 +135,13 @@ export const ModelSelect: FC<ModelSelectProps> = ({
         <Tabs value={tab} onValueChange={(value: any) => setTab(value)}>
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="all">All</TabsTrigger>
-            {modelProviders.map(provider => (
-              <TabsTrigger key={provider} value={provider}>
-                {provider.charAt(0).toUpperCase() + provider.slice(1)}
-              </TabsTrigger>
-            ))}
+            {modelProviders
+              .filter(provider => (onlyOllama ? provider === "ollama" : true))
+              .map(provider => (
+                <TabsTrigger key={provider} value={provider}>
+                  {provider.charAt(0).toUpperCase() + provider.slice(1)}
+                </TabsTrigger>
+              ))}
           </TabsList>
         </Tabs>
 

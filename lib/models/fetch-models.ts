@@ -69,9 +69,10 @@ export const fetchOllamaModels = async () => {
       imageInput: false
     }))
 
-    return localModels
+    return { localModels, isOllamaRunning: true }
   } catch (error) {
     console.warn("Error fetching Ollama models: " + error)
+    return { localModels: [], isOllamaRunning: false }
   }
 }
 

@@ -25,15 +25,17 @@ interface ChatSettingsFormProps {
   onChangeChatSettings: (value: ChatSettings) => void
   useAdvancedDropdown?: boolean
   showTooltip?: boolean
+  onlyOllama?: boolean
 }
 
 export const ChatSettingsForm: FC<ChatSettingsFormProps> = ({
   chatSettings,
   onChangeChatSettings,
   useAdvancedDropdown = true,
-  showTooltip = true
+  showTooltip = true,
+  onlyOllama = false
 }) => {
-  const { profile, models } = useContext(ChatbotUIContext)
+  const { profile, models, isOllamaRunning } = useContext(ChatbotUIContext)
 
   if (!profile) return null
 
@@ -42,12 +44,17 @@ export const ChatSettingsForm: FC<ChatSettingsFormProps> = ({
       <div className="space-y-1">
         <Label>Model</Label>
 
-        <ModelSelect
-          selectedModelId={chatSettings.model}
-          onSelectModel={model => {
-            onChangeChatSettings({ ...chatSettings, model })
-          }}
-        />
+        {onlyOllama && !isOllamaRunning ? (
+          <div className="text-sm">Waiting ollama starting...</div>
+        ) : (
+          <ModelSelect
+            selectedModelId={chatSettings.model}
+            onSelectModel={model => {
+              onChangeChatSettings({ ...chatSettings, model })
+            }}
+            onlyOllama={onlyOllama}
+          />
+        )}
       </div>
 
       <div className="space-y-1">

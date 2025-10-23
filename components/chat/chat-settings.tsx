@@ -19,7 +19,8 @@ export const ChatSettings: FC<ChatSettingsProps> = ({}) => {
     models,
     availableHostedModels,
     availableLocalModels,
-    availableOpenRouterModels
+    availableOpenRouterModels,
+    isOllamaRunning
   } = useContext(ChatbotUIContext)
 
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -48,19 +49,21 @@ export const ChatSettings: FC<ChatSettingsProps> = ({}) => {
 
   if (!chatSettings) return null
 
-  const allModels = [
-    ...models.map(model => ({
-      modelId: model.model_id as LLMID,
-      modelName: model.name,
-      provider: "custom" as ModelProvider,
-      hostedId: model.id,
-      platformLink: "",
-      imageInput: false
-    })),
-    ...availableHostedModels,
-    ...availableLocalModels,
-    ...availableOpenRouterModels
-  ]
+  const allModels = isOllamaRunning
+    ? availableLocalModels
+    : [
+        ...models.map(model => ({
+          modelId: model.model_id as LLMID,
+          modelName: model.name,
+          provider: "custom" as ModelProvider,
+          hostedId: model.id,
+          platformLink: "",
+          imageInput: false
+        })),
+        ...availableHostedModels,
+        ...availableLocalModels,
+        ...availableOpenRouterModels
+      ]
 
   const fullModel = allModels.find(llm => llm.modelId === chatSettings.model)
 
@@ -73,7 +76,9 @@ export const ChatSettings: FC<ChatSettingsProps> = ({}) => {
           variant="ghost"
         >
           <div className="max-w-[120px] truncate text-lg sm:max-w-[300px] lg:max-w-[500px]">
-            {fullModel?.modelName || chatSettings.model}
+            {isOllamaRunning
+              ? fullModel?.modelName || chatSettings.model
+              : "Waiting ollama starting..."}
           </div>
 
           <IconAdjustmentsHorizontal size={28} />
@@ -87,6 +92,7 @@ export const ChatSettings: FC<ChatSettingsProps> = ({}) => {
         <ChatSettingsForm
           chatSettings={chatSettings}
           onChangeChatSettings={setChatSettings}
+          onlyOllama={true}
         />
       </PopoverContent>
     </Popover>

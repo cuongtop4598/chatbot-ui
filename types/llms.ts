@@ -11,6 +11,7 @@ export interface OpenRouterLLM {
   hostedId: string
   platformLink: string
   imageInput: boolean
+  maxContext?: number
   pricing?: {
     currency: string
     unit: string
